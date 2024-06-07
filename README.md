@@ -1,8 +1,12 @@
 # <center>등산을 사랑하는 당신을 위한 서비스, 산타</center>
 ---
-![스크린샷_2024-05-11_오전_3.31.03](/uploads/1ef2a348ba3cbc13164aab11751061f2/스크린샷_2024-05-11_오전_3.31.03.png)
-- 산타
-- 등산을 좋아하는 사람을 위한 모임 서비스
+<img src="https://github.com/MinZW0n/Santa/assets/118906074/8cb85610-59be-4f89-9aba-810f34ddc98f" width="300" height="400"/>
+<br></br>
+- 산림청에서 제공하는 100대 명산 리스트 기준으로 유저간에 점수를 공유할 수 있도록 인증형 챌린지를 제공함 <br></br>
+- 지속가능한 등산문화를 위한 취향에 맞는 커뮤니티 문화 조성<br></br>
+- 도메인 : https://d1xcphd0q4kb63.cloudfront.net/<br></br>
+- 스웨거 : http://ec2-43-200-136-37.ap-northeast-2.compute.amazonaws.com/swagger-ui/index.html#/ <br></br>
+
 
 ## **서비스 목적**
 ---
@@ -17,72 +21,47 @@
 
 ## 프로젝트 구조 및 아키텍처
 ---
-![스크린샷_2024-05-11_오전_3.36.30](/uploads/71aea802f6dfa5b7f075ac997e9b6268/스크린샷_2024-05-11_오전_3.36.30.png)
+![image](https://github.com/MinZW0n/Santa/assets/118906074/3b2c0507-a26c-45b5-ba9f-6a076cc74685)
+
 
 ## ERD
 ---
-![스크린샷_2024-05-11_오전_3.39.04](/uploads/82e034565814eda95f48849f43cbd125/스크린샷_2024-05-11_오전_3.39.04.png)
+![image](https://github.com/MinZW0n/Santa/assets/118906074/9a3f5b3e-b286-42ae-86ac-6ef19dbf1577)
+
 
 ## 플로우차트
 ---
-![스크린샷_2024-05-11_오전_3.41.00](/uploads/aef3a700a86ae7adb3e6ec9057c1cecb/스크린샷_2024-05-11_오전_3.41.00.png)
+![image](https://github.com/MinZW0n/Santa/assets/118906074/34ead2ef-45fe-4227-a7f7-5e87706f0e82)
+
 
 ## 와이어프레임
 ---
-![스크린샷_2024-05-11_오전_3.42.31](/uploads/266b50cc2fd2ba0b7b83a39d57243507/스크린샷_2024-05-11_오전_3.42.31.png)
+![image](https://github.com/MinZW0n/Santa/assets/118906074/1075e8f0-ee3b-4a38-a494-b1eeecf3ebff)
 
-## 세부 기술스텍
----
-프론트엔드
-> - 타입스크립트
-> - Redux 상태관리
-> - SCSS
 
-<br/>
+## 기술 스택
 
-백엔드
-> - JAVA
->    - OpenJDK 17
-> - Spring Boot 3.2.4
->    - Spring Web 3.2.4
->    - Spring Data JPA 3.2.4
->    - Spring Data Redis 3.2.4
->    - Spring mail 3.2.4
->    - Spring Security 3.2.4
-> - JUnit5
-> - MySQL 8
+> 프론트엔드
 
-<br/>
-
-서버
-> - Docker
-> - NginX
-> - AWS(EC2, S3, ElastiCache)
-
-<br/>
-<img alt="typescript" src ="https://img.shields.io/badge/typescript-3178C6.svg?&style=for-the-badge&logo=typescript&logoColor=white"/> <img alt="react" src ="https://img.shields.io/badge/react-61DAFB.svg?&style=for-the-badge&logo=react&logoColor=white"/> <img alt="TanStack Query" src ="https://img.shields.io/badge/TanStack Query-FF4154.svg?&style=for-the-badge&logo=reactquery&logoColor=white"/>, 
+<img alt="typescript" src ="https://img.shields.io/badge/typescript-3178C6.svg?&style=for-the-badge&logo=typescript&logoColor=white"/> <img alt="react" src ="https://img.shields.io/badge/react-61DAFB.svg?&style=for-the-badge&logo=react&logoColor=white"/> <img alt="TanStack Query" src ="https://img.shields.io/badge/TanStack Query-FF4154.svg?&style=for-the-badge&logo=reactquery&logoColor=white"/>
 <img alt="gitlab" src ="https://img.shields.io/badge/gitlab-FC6D26.svg?&style=for-the-badge&logo=gitlab&logoColor=white"/>
 <img alt="sass" src ="https://img.shields.io/badge/sass-CC6699.svg?&style=for-the-badge&logo=sass&logoColor=white"/>
-<img alt="reacthookform" src ="https://img.shields.io/badge/reacthookform-EC5990.svg?&style=for-the-badge&logo=reacthookform&logoColor=white"/>
+<img alt="reacthookform" src ="https://img.shields.io/badge/reacthookform-EC5990.svg?&style=for-the-badge&logo=reacthookform&logoColor=white"/> 
 
-<br/>
-<img alt="springboot" src ="https://img.shields.io/badge/springboot-6DB33F.svg?&style=for-the-badge&logo=springboot&logoColor=white"/>
-<img alt="springsecurity" src ="https://img.shields.io/badge/springsecurity-6DB33F.svg?&style=for-the-badge&logo=springsecurity&logoColor=white"/>
-<img alt="MySQL" src ="https://img.shields.io/badge/mysql-4479A1.svg?&style=for-the-badge&logo=mysql&logoColor=white"/>
+> 백엔드
+
+<img alt="springboot" src ="https://img.shields.io/badge/springboot-6DB33F.svg?&style=for-the-badge&logo=springboot&logoColor=white"/> <img alt="springsecurity" src ="https://img.shields.io/badge/springsecurity-6DB33F.svg?&style=for-the-badge&logo=springsecurity&logoColor=white"/>
+<img alt="mysql" src ="https://img.shields.io/badge/mysql-4479A1.svg?&style=for-the-badge&logo=mysql&logoColor=white"/> 
+
+
+
+> 서버
+
+<img alt="docker" src ="https://img.shields.io/badge/docker-2496ED.svg?&style=for-the-badge&logo=docker&logoColor=white"/> <img alt="nginx" src ="https://img.shields.io/badge/nginx-009639.svg?&style=for-the-badge&logo=nginx&logoColor=white"/>
 <img alt="jenkins" src ="https://img.shields.io/badge/jenkins-D24939.svg?&style=for-the-badge&logo=jenkins&logoColor=white"/>
-<img alt="ubuntu" src ="https://img.shields.io/badge/ubuntu-E95420.svg?&style=for-the-badge&logo=ubuntu&logoColor=white"/>
-<img alt="docker" src ="https://img.shields.io/badge/docker-2496ED.svg?&style=for-the-badge&logo=docker&logoColor=white"/>
-<img alt="nginx" src ="https://img.shields.io/badge/nginx-009639.svg?&style=for-the-badge&logo=nginx&logoColor=white"/>
-<img alt="amazonec2" src ="https://img.shields.io/badge/amazonec2-FF9900.svg?&style=for-the-badge&logo=amazonec2&logoColor=white"/>
-<img alt="amazons3" src ="https://img.shields.io/badge/amazons3-569A31.svg?&style=for-the-badge&logo=amazons3&logoColor=white"/>
-<img alt="amazonrds" src ="https://img.shields.io/badge/amazonrds-527FFF.svg?&style=for-the-badge&logo=amazonrds&logoColor=white"/>
-
-<br/>
-<img alt="gitlab" src ="https://img.shields.io/badge/gitlab-FC6D26.svg?&style=for-the-badge&logo=gitlab&logoColor=white"/>
-<img alt="swagger" src ="https://img.shields.io/badge/swagger-85EA2D.svg?&style=for-the-badge&logo=swagger&logoColor=white"/>
-<img alt="figma" src ="https://img.shields.io/badge/figma-F24E1E.svg?&style=for-the-badge&logo=figma&logoColor=white"/>
-<img alt="notion" src ="https://img.shields.io/badge/notion-000000.svg?&style=for-the-badge&logo=notion&logoColor=white"/>
-<img alt="discord" src ="https://img.shields.io/badge/discord-5865F2.svg?&style=for-the-badge&logo=discord&logoColor=white"/>
+<img alt="amazon aws" src ="https://img.shields.io/badge/amazon aws-232F3E.svg?&style=for-the-badge&logo=amazonaws&logoColor=white"/>
+<img alt="amazon ec2" src ="https://img.shields.io/badge/amazon ec2-FF9900.svg?&style=for-the-badge&logo=amazonec2&logoColor=white"/>
+<img alt="amazonelasticache" src ="https://img.shields.io/badge/amazon elasticache-C925D1.svg?&style=for-the-badge&logo=amazonelasticache&logoColor=white"/> <img alt="amazonrds" src ="https://img.shields.io/badge/amazonrds-527FFF.svg?&style=for-the-badge&logo=amazonrds&logoColor=white"/>
 
 ## 서비스 기능 명세
 ---
@@ -112,7 +91,8 @@
 >    - 모임페이지 삭제 가능
 
 ### 3.  챌린지 기능
-> - 챌린지는 자동으로 수행되며 100% 완료 후 업적 트로피 획득
+> - 유저가 챌린지 시작버튼을 통해 시작하는 방식이 아닌, 챌린지 시작 조건 만족 시 자동으로 시작되는 방식
+> - 유저의 챌린지 진행도가 챌린지 생성시 설정한 성공기준에 부합하면 성공 여부를 포함하는 컬럼 값인 isCompleted가 true로 바뀌게 되고 업적 트로피를 획득
 
 ### 4.  인증 기능
 > - 산 정상 좌표값 기반으로 정상 및 등반높이 인증
