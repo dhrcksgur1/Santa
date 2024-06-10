@@ -422,6 +422,14 @@ class MeetingServiceImplTest {
     }
 
     @Test
+    void joinMeeting_failDueToParticipatingOnSameDate() {
+        when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findMeetingsByUserId(2L)).thenReturn(List.of(meeting));
+
+        assertThrows(ServiceLogicException.class, () -> meetingService.joinMeeting(1L, "user@example.com"));
+    }
+    @Test
     void endMeeting_success() {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
         when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
