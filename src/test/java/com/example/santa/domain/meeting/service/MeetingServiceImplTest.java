@@ -230,6 +230,28 @@ class MeetingServiceImplTest {
         assertEquals("업데이트 된 산행", response.getTags().get(0));
     }
 
+    @Test
+    void updateMeeting_failDueToParticipatingOnSameDate() {
+        when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
+        when(categoryRepository.findByName("등산")).thenReturn(Optional.of(category));
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
+        when(userRepository.findMeetingsByUserId(leader.getId())).thenReturn(List.of(meeting));
+
+
+        MeetingDto updateDto = new MeetingDto();
+        updateDto.setMeetingName("업데이트 된 산악회");
+        updateDto.setCategoryName("등산");
+        updateDto.setMountainName("설악산");
+        updateDto.setDescription("설악산 등산 후 식사");
+        updateDto.setHeadcount(20);
+        updateDto.setDate(LocalDate.of(2024, 5, 20));
+
+
+        assertThrows(ServiceLogicException.class, () -> {
+            meetingService.updateMeeting("test@example.com", 1L, updateDto);
+        });
+    }
+
     //READ
     @Test
     void getAllMeetings_success() {
