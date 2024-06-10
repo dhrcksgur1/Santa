@@ -177,6 +177,18 @@ class MeetingServiceImplTest {
         assertEquals("https://s3.amazonaws.com/test-bucket/test-image.jpg",response.getImage());
     }
 
+    @Test
+    void createMeeting_failDueToParticipatingOnSameDate() {
+        // 사용자가 이미 같은 날짜에 다른 모임에 참여중인 경우
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
+        when(categoryRepository.findByName("등산")).thenReturn(Optional.of(category));
+        when(userRepository.findMeetingsByUserId(leader.getId())).thenReturn(List.of(meeting));
+
+        // 동일한 날짜에 다른 모임에 참여중이므로 예외가 발생해야 함
+        assertThrows(ServiceLogicException.class, () -> {
+            meetingService.createMeeting("test@example.com", meetingDto);
+        });
+    }
 
 
     @Test
