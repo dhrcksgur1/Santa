@@ -178,7 +178,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void createMeeting_failDueToParticipatingOnSameDate() {
+    void createMeeting_ThrowsExceptionIfParticipatingOnSameDate() {
         // 사용자가 이미 같은 날짜에 다른 모임에 참여중인 경우
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
         when(categoryRepository.findByName("등산")).thenReturn(Optional.of(category));
@@ -231,7 +231,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void updateMeeting_failDueToParticipatingOnSameDate() {
+    void updateMeeting_ThrowsExceptionIfParticipatingOnSameDate() {
         when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
         when(categoryRepository.findByName("등산")).thenReturn(Optional.of(category));
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
@@ -392,7 +392,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void deleteMeeting_failure_userNotLeaderOrAdmin() {
+    void deleteMeeting_ThrowsExceptionIfUserNotLeaderOrAdmin() {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
         when(meetingRepository.existsById(1L)).thenReturn(true);
@@ -422,7 +422,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void joinMeeting_failDueToParticipatingOnSameDate() {
+    void joinMeeting_ThrowsExceptionIfParticipatingOnSameDate() {
         when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(userRepository.findMeetingsByUserId(2L)).thenReturn(List.of(meeting));
@@ -444,7 +444,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void endMeeting_userNotLeader() {
+    void endMeeting_ThrowsExceptionIfUserNotLeader() {
         when(userRepository.findByEmail("user@email.com")).thenReturn(Optional.of(user));
         when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
 
@@ -456,7 +456,7 @@ class MeetingServiceImplTest {
     }
 
     @Test
-    void endMeeting_alreadyEnded() {
+    void endMeeting_ThrowsExceptionIfAlreadyEnded() {
         meeting.setEnd(true);
 
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(leader));
