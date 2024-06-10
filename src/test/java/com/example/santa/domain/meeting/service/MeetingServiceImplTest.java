@@ -37,6 +37,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 class MeetingServiceImplTest {
@@ -102,6 +104,11 @@ class MeetingServiceImplTest {
         tag = new Tag();
         tag.setName("산행");
 
+        String fileName = "test-image.jpg";
+        String contentType = "image/jpeg";
+        byte[] content = {0x01, 0x02, 0x03};
+        MultipartFile imageFile = new MockMultipartFile(fileName, fileName, contentType, content);
+
         meetingDto = new MeetingDto();
         meetingDto.setMeetingName("산악회");
         meetingDto.setCategoryName("등산");
@@ -110,6 +117,7 @@ class MeetingServiceImplTest {
         meetingDto.setHeadcount(15);
         meetingDto.setDate(LocalDate.of(2024, 5, 20));
         meetingDto.setTags(Collections.singletonList("산행"));
+        meetingDto.setImageFile(imageFile);
 
         MeetingTag meetingTag = new MeetingTag();
         meetingTag.setTag(tag);
@@ -135,6 +143,7 @@ class MeetingServiceImplTest {
                 .date(LocalDate.of(2024, 5, 20))
                 .meetingTags(new HashSet<>(Collections.singletonList(meetingTag))) // 초기화 및 값 할당
                 .participant(new ArrayList<>(Collections.singletonList(participant))) // 초기화 및 값 할당
+                .image("https://s3.amazonaws.com/test-bucket/test-image.jpg")
                 .build();
 
 
@@ -145,6 +154,7 @@ class MeetingServiceImplTest {
     void createMeeting_success() {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(leader));
         when(categoryRepository.findByName("등산")).thenReturn(Optional.of(category));
+        when(s3ImageService.upload(any(MultipartFile.class))).thenReturn("https://s3.amazonaws.com/test-bucket/test-image.jpg");
         when(meetingRepository.save(any(Meeting.class))).thenReturn(meeting);
         when(tagRepository.findByName("산행")).thenReturn(Optional.empty());
         when(tagRepository.save(any(Tag.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -164,6 +174,7 @@ class MeetingServiceImplTest {
         assertEquals(1L, response.getLeaderId());
         assertEquals(1, response.getTags().size());
         assertEquals("산행", response.getTags().get(0));
+        assertEquals("https://s3.amazonaws.com/test-bucket/test-image.jpg",response.getImage());
     }
 
 
