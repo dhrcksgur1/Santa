@@ -218,5 +218,5 @@ gradle-app.setting
 /etc/mountainData/엑셀데이터파싱프로그램_visual_studio로오픈/parsingProject/packages/System.Runtime.CompilerServices.Unsafe.6.0.0
 /src/main/resources/application-private.properties
 /src/main/resources/application.properties
-
+.settings.gradle
 
