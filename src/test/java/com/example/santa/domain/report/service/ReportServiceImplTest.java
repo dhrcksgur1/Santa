@@ -68,9 +68,9 @@ public class ReportServiceImplTest {
 
     @Test
     void testReporting_Success() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(reporter));
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(reportedParticipant));
-        when(reportRepository.existsByReporterAndReportedParticipant(any(), any())).thenReturn(false);
+        when(userRepository.findByEmail("reporter@example.com")).thenReturn(Optional.of(reporter));
+        when(userRepository.findById(reportRequestDto.getReportedParticipantId())).thenReturn(Optional.of(reportedParticipant));
+        when(reportRepository.existsByReporterAndReportedParticipant(reporter, reportedParticipant)).thenReturn(false);
         when(reportRepository.save(any(Report.class))).thenReturn(report);
         when(reportResponseDtoMapper.toDto(any(Report.class))).thenReturn(reportResponseDto);
 
@@ -94,8 +94,8 @@ public class ReportServiceImplTest {
 
     @Test
     void testReporting_ReportAlreadyExists() {
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(reporter));
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(reportedParticipant));
+        when(userRepository.findByEmail("reporter@example.com")).thenReturn(Optional.of(reporter));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(reportedParticipant));
         when(reportRepository.existsByReporterAndReportedParticipant(reporter, reportedParticipant)).thenReturn(true);
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {
