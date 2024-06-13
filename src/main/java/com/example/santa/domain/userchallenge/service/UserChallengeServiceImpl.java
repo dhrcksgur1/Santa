@@ -86,8 +86,8 @@ public class UserChallengeServiceImpl implements UserChallengeService{
 
     @Transactional
     @Override
-    public void updateUserChallengeOnMeetingJoin(Long meetingId,Long userId) {
-        User user = userRepository.findById(userId)
+    public void updateUserChallengeOnMeetingJoin(String email, Long meetingId) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));

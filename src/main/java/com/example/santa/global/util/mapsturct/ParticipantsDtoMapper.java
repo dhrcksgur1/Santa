@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface ParticipantsDtoMapper extends EntityMapper<ParticipantDto, Participant> {
 
     @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.email", target = "userEmail")
     @Mapping(source = "user.name", target = "userName")
     @Mapping(source = "user.nickname", target = "userNickname")
     @Mapping(source = "user.image", target = "userImage")

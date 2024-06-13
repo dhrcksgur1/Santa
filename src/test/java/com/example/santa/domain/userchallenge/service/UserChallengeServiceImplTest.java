@@ -157,14 +157,14 @@ class UserChallengeServiceImplTest {
     //새로운 UserChallenge 생성 및 진행률 증가: 새로운 UserChallenge가 생성되고 진행률이 증가하는지 확인합니다.
     @Test
     void updateUserChallengeOnMeetingJoin_NewUserChallengeCreatedAndProgressIncremented() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
         when(challengeRepository.findByCategoryName(anyString())).thenReturn(Arrays.asList(challenge));
         when(userChallengeRepository.findByUserAndChallengeId(any(User.class), anyLong())).thenReturn(Optional.empty());
         when(userChallengeRepository.save(any(UserChallenge.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 
-        userChallengeService.updateUserChallengeOnMeetingJoin(1L, 1L);
+        userChallengeService.updateUserChallengeOnMeetingJoin("test@email.com", 1L);
 
         ArgumentCaptor<UserChallenge> captor = ArgumentCaptor.forClass(UserChallenge.class);
         verify(userChallengeRepository, times(2)).save(captor.capture());
@@ -183,14 +183,14 @@ class UserChallengeServiceImplTest {
     //진행률 증가 및 챌린지 완료: 진행률이 증가하고 명확한 기준에 도달하면 챌린지가 완료로 표시되는지 확인합니다.
     @Test
     void updateUserChallengeOnMeetingJoin_ProgressIncrementedAndChallengeCompleted() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
         when(userChallengeRepository.findByUserAndChallengeId(any(User.class), anyLong())).thenReturn(Optional.of(userChallenge));
         when(challengeRepository.findByCategoryName(anyString())).thenReturn(Arrays.asList(challenge));
 
         userChallenge.setProgress(challenge.getClearStandard() - 1);
 
-        userChallengeService.updateUserChallengeOnMeetingJoin(1L, 1L);
+        userChallengeService.updateUserChallengeOnMeetingJoin("test@email.com", 1L);
 
         ArgumentCaptor<UserChallenge> captor = ArgumentCaptor.forClass(UserChallenge.class);
         verify(userChallengeRepository, times(1)).save(captor.capture());
@@ -203,21 +203,22 @@ class UserChallengeServiceImplTest {
 
     @Test
     void updateUserChallengeOnMeetingJoin_ThrowsExceptionIfUserNotFound() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {
-            userChallengeService.updateUserChallengeOnMeetingJoin(1L, 1L);
+            userChallengeService.updateUserChallengeOnMeetingJoin("nonexist@email.com", 1L);
         });
 
         assertEquals("존재하지 않는 회원입니다." ,exception.getMessage());
     }
 
     @Test
-    void updateUserChallengeOnMeetingJoin_ThrowsExceptionIfMeetingNotFound_() {
+    void updateUserChallengeOnMeetingJoin_ThrowsExceptionIfMeetingNotFound() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {
-            userChallengeService.updateUserChallengeOnMeetingJoin(1L, 1L);
+            userChallengeService.updateUserChallengeOnMeetingJoin("test@email.com", 2L);
         });
 
         assertEquals("모임을 찾을 수 없습니다.", exception.getMessage());

@@ -13,6 +13,8 @@ import lombok.Setter;
 public class ParticipantDto {
     @Schema(description = "테스트 값", example = "1")
     private Long userId;
+    @Schema(description = "테스트 값", example = "test@email.com")
+    private String userEmail;
     @Schema(description = "테스트 값", example = "나정균")
     private String userName;
     @Schema(description = "테스트 값", example = "dotseven")

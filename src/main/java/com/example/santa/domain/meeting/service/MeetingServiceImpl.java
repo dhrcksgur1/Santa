@@ -330,7 +330,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         if(!Objects.equals(meeting.getCategory().getName(), "기타")){
             for (ParticipantDto participant : participantsDtoMapper.toDtoList(meeting.getParticipant())){
-                userChallengeService.updateUserChallengeOnMeetingJoin(id, participant.getUserId());
+                userChallengeService.updateUserChallengeOnMeetingJoin(participant.getUserEmail(),id);
             }
         }
         return participantsDtoMapper.toDtoList(meeting.getParticipant());

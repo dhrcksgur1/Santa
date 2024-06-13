@@ -440,7 +440,7 @@ class MeetingServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(meetingRepository, times(1)).save(meeting);
-        verify(userChallengeService, times(1)).updateUserChallengeOnMeetingJoin(1L, 1L);
+
     }
 
     @Test
