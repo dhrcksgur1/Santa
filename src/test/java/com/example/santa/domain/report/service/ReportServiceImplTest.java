@@ -106,7 +106,7 @@ public class ReportServiceImplTest {
     }
 
     @Test
-    void testGetReports() {
+    void testGetReports_Success() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<Report> page = new PageImpl<>(Arrays.asList(report));
         when(reportRepository.findAll(any(PageRequest.class))).thenReturn(page);
@@ -122,7 +122,7 @@ public class ReportServiceImplTest {
     }
 
     @Test
-    void testDeleteReport() {
+    void testDeleteReport_Success() {
         doNothing().when(reportRepository).deleteById(anyLong());
         reportService.deleteReport(1L);
         verify(reportRepository).deleteById(1L);

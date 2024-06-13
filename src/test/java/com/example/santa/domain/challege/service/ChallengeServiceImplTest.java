@@ -59,7 +59,7 @@ public class ChallengeServiceImplTest {
     private Pageable pageable;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // Setup data
         category = new Category();
         category.setId(1L);
@@ -95,7 +95,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testSaveChallenge_WithDefaultImage() {
+    void saveChallenge_WithDefaultImage() {
         challengeCreateDto.setImageFile(null);
 
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
@@ -109,7 +109,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testSaveChallenge_WithNewImage() {
+    void saveChallenge_WithNewImage() {
         MultipartFile imageFile = new MockMultipartFile("file", "test.png", "image/png", "test image content".getBytes());
         challengeCreateDto.setImageFile(imageFile);
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
@@ -127,7 +127,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    void testFindAllChallenges() {
+    void findAllChallenges_Success() {
         // Given
         Pageable pageable = PageRequest.of(0, 10);
         Category category = new Category(1L, "힐링");
@@ -171,7 +171,7 @@ public class ChallengeServiceImplTest {
 
 
     @Test
-    public void testFindChallengeById_NotFound() {
+    void findChallengeById_NotFound() {
         when(challengeRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         ChallengeResponseDto result = challengeService.findChallengeById(1L);
@@ -180,7 +180,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testFindChallengeById_Found() {
+    void findChallengeById_Found() {
 
         when(challengeRepository.findById(1L)).thenReturn(Optional.of(challenge));
 
@@ -193,7 +193,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void updateChallenge_WithImage_UpdatesChallengeAndImage() {
+    void updateChallenge_WithImage_UpdatesChallengeAndImage() {
         // Given
         Long challengeId = 1L;
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
@@ -226,7 +226,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void updateChallenge_WithoutImage_UpdatesChallengeInfoOnly() {
+    void updateChallenge_WithoutImage_UpdatesChallengeInfoOnly() {
         // Given
         Long challengeId = 1L;
         ChallengeCreateDto requestDto = new ChallengeCreateDto(
@@ -257,7 +257,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void updateChallenge_ChallengeNotFound() {
+    void updateChallenge_ThrowsExceptionIfChallengeNotFound() {
         // GIven
         Long nonExistingId = 999L;
         ChallengeCreateDto dto = new ChallengeCreateDto();
@@ -272,7 +272,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void updateChallenge_CategoryNotFound() {
+    void updateChallenge_ThrowsExceptionIfCategoryNotFound() {
         // Given
         Long challengeId = 1L;
         ChallengeCreateDto dto = new ChallengeCreateDto();
@@ -288,13 +288,13 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testDeleteChallenge() {
+    void deleteChallenge_Success() {
         challengeService.deleteChallenge(1L);
         verify(challengeRepository).deleteById(1L);
     }
 
     @Test
-    public void testSaveChallenge_CategoryNotFound() {
+    void saveChallenge_ThrowsExceptionIfCategoryNotFound() {
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {

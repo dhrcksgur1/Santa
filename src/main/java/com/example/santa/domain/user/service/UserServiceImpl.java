@@ -199,42 +199,6 @@ public class UserServiceImpl implements UserService {
         return user.getEmail();
     }
 
-    @Override
-    public Page<UserMountainResponseDto> findAllUserMountains(String email, Pageable pageable) {
-        User byEmail = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
-        Page<UserMountainResponseDto> pageDto = userRepository.findUserMountainsByUserId(byEmail.getId(), pageable)
-                .map(userMountainResponseDtoMapper::toDto);
-        return pageDto;
-    }
-
-    @Override
-    public Page<UserChallengeCompletionResponseDto> findChallengesByCompletion(String email, boolean completion, Pageable pageable) {
-        User byEmail = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
-        Page<UserChallengeCompletionResponseDto> completionDto;
-        if (completion) {
-            completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
-                    .map(userChallengeCompletionResponseMapper::toDto);
-        } else {
-            completionDto = userRepository.findByUserIdAndIsCompletedNull(byEmail.getId(), pageable)
-                    .map(userChallengeCompletionResponseMapper::toDto);
-        }
-        return completionDto;
-    }
-
-    @Override
-    public RankingResponseDto getIndividualRanking(String email) {
-        List<Ranking> rankings = rankingRepository.findAllByOrderByScoreDesc();
-        long rank = 1;
-        for (Ranking ranking : rankings) {
-            if (ranking.getUser().getEmail().equals(email)) {
-                return new RankingResponseDto(rank, ranking.getId(), ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore());
-            }
-            rank++;
-        }
-        throw new ServiceLogicException(ExceptionCode.USERRANKING_NOT_FOUND);
-    }
     @Transactional
     @Override
     public String resetPassword(String email, String newPassword) {
@@ -290,5 +254,42 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         List<PreferredCategory> allByUserId = preferredCategoryRepository.findAllByUserId(user.getId());
         preferredCategoryRepository.deleteAll(allByUserId);
+    }
+
+    @Override
+    public Page<UserMountainResponseDto> findAllUserMountains(String email, Pageable pageable) {
+        User byEmail = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        Page<UserMountainResponseDto> pageDto = userRepository.findUserMountainsByUserId(byEmail.getId(), pageable)
+                .map(userMountainResponseDtoMapper::toDto);
+        return pageDto;
+    }
+
+    @Override
+    public Page<UserChallengeCompletionResponseDto> findChallengesByCompletion(String email, boolean completion, Pageable pageable) {
+        User byEmail = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        Page<UserChallengeCompletionResponseDto> completionDto;
+        if (completion) {
+            completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
+                    .map(userChallengeCompletionResponseMapper::toDto);
+        } else {
+            completionDto = userRepository.findByUserIdAndIsCompletedNull(byEmail.getId(), pageable)
+                    .map(userChallengeCompletionResponseMapper::toDto);
+        }
+        return completionDto;
+    }
+
+    @Override
+    public RankingResponseDto getIndividualRanking(String email) {
+        List<Ranking> rankings = rankingRepository.findAllByOrderByScoreDesc();
+        long rank = 1;
+        for (Ranking ranking : rankings) {
+            if (ranking.getUser().getEmail().equals(email)) {
+                return new RankingResponseDto(rank, ranking.getId(), ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore());
+            }
+            rank++;
+        }
+        throw new ServiceLogicException(ExceptionCode.USERRANKING_NOT_FOUND);
     }
 }

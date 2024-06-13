@@ -189,7 +189,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testSignup_Success() {
+    void signup_Success() {
         when(userService.checkEmailDuplicate(anyString())).thenReturn(false);
         when(userService.checkNicknameDuplicate(anyString())).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(i -> {
@@ -204,7 +204,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testSignup_EmailAlreadyExists() {
+    public void signup_ThrowsExceptionIfEmailExists() {
         // Given
         UserSignupRequestDto requestDto = new UserSignupRequestDto();
         requestDto.setEmail("existinguser@gmail.com"); // 이미 존재하는 이메일을 사용
@@ -222,17 +222,17 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void signup_NicknameAlreadyExists() {
+    public void signup_ThrowsExceptionIfNicknameExists() {
         // Given
         UserSignupRequestDto requestDto = new UserSignupRequestDto();
         requestDto.setEmail("newuser@gmail.com");
         requestDto.setPassword("1q2w3e4r!!");
         requestDto.setName("엘리스");
-        requestDto.setNickname("existingnickname"); // 이미 존재하는 닉네임을 사용
+        requestDto.setNickname("existingnickname");
         requestDto.setPhoneNumber("01023234545");
 
-        when(userRepository.existsByEmail(anyString())).thenReturn(false); // 이메일 중복 체크는 통과
-        when(userRepository.existsByNickname(anyString())).thenReturn(true); // 이미 존재하는 닉네임을 가정
+        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByNickname(anyString())).thenReturn(true);
 
         // When & Then
         assertThrows(ServiceLogicException.class, () -> {
@@ -240,11 +240,10 @@ public class UserServiceImplTest {
         );
     }
 
-
     @Test
-    void testCheckEmailDuplicate_WhenExists_ReturnsTrue() {
+    void checkEmailDuplicate_WhenExists_ReturnsTrue() {
         // Arrange
-//        String email = "user@example.com";
+        String email = "user@example.com";
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
         // Act
         Boolean result = userService.checkEmailDuplicate(user.getEmail());
@@ -255,7 +254,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testCheckEmailDuplicate_WhenNotExists_ReturnsFalse() {
+    void checkEmailDuplicate_WhenNotExists_ReturnsFalse() {
         // Arrange
         String email = "user@example.com";
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
@@ -298,36 +297,30 @@ public class UserServiceImplTest {
 
     @Test
     void signIn_Success() {
-
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        // Arrange
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 signInRequestDto.getEmail(), signInRequestDto.getPassword(), user.getAuthorities());
 
-        // Mock the Authentication object that is expected to be returned by the authenticationManager
         Authentication authenticated = Mockito.mock(Authentication.class);
         when(authenticationManager.authenticate(authenticationToken)).thenReturn(authenticated);
 
         JwtToken expectedToken = new JwtToken("Bearer", "dummy-access-token", "d", "ADMIN");
 
-        // Use lenient to avoid strict stubbing errors, matching any Authentication object
         Mockito.lenient().when(jwtTokenProvider.generateToken(any(Authentication.class))).thenReturn(expectedToken);
 
-        // Act
         JwtToken actualToken = userService.signIn(signInRequestDto);
 
-        // Assert
         assertNotNull(actualToken);
         assertEquals(expectedToken, actualToken);
 
         verify(userRepository).findByEmail(signInRequestDto.getEmail());
         verify(authenticationManager).authenticate(authenticationToken);
 
-        // Adjust verification to match any Authentication object rather than the specific mock
-        verify(jwtTokenProvider).generateToken(any(Authentication.class));  // This change ensures that any Authentication object is accepted
+        verify(jwtTokenProvider).generateToken(any(Authentication.class));
     }
+
     @Test
-    void signIn_UserNotFound_ThrowsException() {
+    void signIn_ThrowsExceptionIfUserNotFound() {
         when(userRepository.findByEmail("user@email.com")).thenReturn(Optional.empty());
         // Act & Assert
         Exception exception = assertThrows(ServiceLogicException.class, () -> userService.signIn(signInRequestDto));
@@ -335,7 +328,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void findUserByEmail_UserExists_ReturnsDto() {
+    void findUserByEmail_Success() {
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(userResponseDtoMapper.toDto(any(User.class))).thenReturn(userResponseDto);
         // Act
@@ -354,7 +347,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testFindAllReportUser_WithSearch_FilteredUsers() {
+    void findAllReportUser_WithSearch_FilteredUsers() {
         // given
         String search = "test";
         Pageable pageable = PageRequest.of(0, 10);
@@ -374,7 +367,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testFindAllReportUser_WithoutSearch_AllUsers() {
+    public void findAllReportUser_WithoutSearch_AllUsers() {
         // given
         String search = "";
         Pageable pageable = PageRequest.of(0, 10);
@@ -394,7 +387,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testChangePassword_Success() {
+    void changePassword_Success() {
         // Given
         String email = user.getEmail();
         String oldPassword = "Password1!";
@@ -408,7 +401,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testChangePassword_UserNotFound() {
+    void changePassword_UserNotFound() {
         // Given
         String email = "nonexistent@email.com";
         String oldPassword = "Password1!";
@@ -424,7 +417,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testRestPassword_Success() {
+    void resetPassword_Success() {
         // Given
         String email = user.getEmail();
         String newPassword = "newPassword";
@@ -438,7 +431,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testRestPassword_UserNotFound() {
+    void resetPassword_ThrowsExceptionIfUserNotFound() {
         // Given
         String email = "nonexistent@email.com";
         String newPassword = "newPassword";
@@ -453,7 +446,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testDeleteUser_Success() {
+    void deleteUser_Success() {
         // Given
         String email = user.getEmail();
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -469,7 +462,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testDeletedUser_UserNotFound() {
+    void deletedUser_ThrowsExceptionIfUserNotFound() {
         // Given
         String email = user.getEmail();
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
@@ -481,7 +474,7 @@ public class UserServiceImplTest {
 
     // 이메일로 사용자를 찾았지만 사용자가 신고된 이력이 있을때 예외발생
     @Test
-    void testDeleted_UserHasReports() {
+    void deleted_ThrowsExceptionIfUserHasReports() {
         // Given
         String email = user.getEmail();
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -494,7 +487,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testDeleteUserFromAdmin_Success() {
+    void deleteUserFromAdmin_Success() {
         // Given
         Long userId = user.getId();
         // When
@@ -505,7 +498,7 @@ public class UserServiceImplTest {
 
     // 이미지, 사용자 정보 둘다 업데이트된 경우
     @Test
-    public void testUpdateUser_WithImage_UpdatesUserAndImage() {
+    public void updateUser_WithImage_UpdatesUserAndImage() {
         // Given
         String email = user.getEmail();
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
@@ -530,7 +523,7 @@ public class UserServiceImplTest {
 
     // 이미지 x, 사용자 정보만 업데이트된 경우
     @Test
-    public void testUpdateUser_WithoutImage_UpdatesUserInfo() {
+    public void updateUser_WithoutImage_UpdatesUserInfo() {
         // given
         String email = user.getEmail();
         UserUpdateRequestDto requestDto = new UserUpdateRequestDto();
@@ -551,7 +544,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testUpdateUser_UserNotFound() {
+    public void updateUser_ThrowsExceptionIfUserNotFound() {
         // Given
         String email = "nonexistent@example.com";
         UserUpdateRequestDto requestDto = new UserUpdateRequestDto();
@@ -562,30 +555,81 @@ public class UserServiceImplTest {
         assertThrows(ServiceLogicException.class, () -> userService.updateUser(email, requestDto));
     }
 
-//    @Test
-//    void testFindAllUserMountains() {
-//        // Given
-//        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-//        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-//        when(userRepository.findUserMountainsByUserId(any(Long.class), any(Pageable.class)))
-//                .thenReturn(new PageImpl<>(Arrays.asList(userMountain)));
-//        when(userMountainResponseDtoMapper.toDto(any(UserMountain.class))).thenReturn(userMountainresponseDto);
-//
-//        // When
-//        Page<UserMountainResponseDto> result = userService.findAllUserMountains(user.getEmail(), pageable);
-//
-//        // Then
-//        assertNotNull(result);
-//        assertEquals(1, result.getTotalElements());
-//        assertEquals(userMountainresponseDto, result.getContent().get(0));
-//
-//        verify(userRepository, times(1)).findByEmail(user.getEmail());
-//        verify(userRepository, times(1)).findUserMountainsByUserId(user.getId(), pageable);
-//        verify(userMountainResponseDtoMapper, times(1)).toDto(userMountain);
-//    }
+    @Test
+    void savePreferredCategories_Success() {
+        // Given
+        List<Long> categoryIds = Arrays.asList(1L, 2L, 3L);
+        Category category1 = Category.builder().id(1L).build();
+        Category category2 = Category.builder().id(2L).build();
+        Category category3 = Category.builder().id(3L).build();
+        List<Long> createdPreferredCategories = Arrays.asList(11L, 12L, 13L);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category1));
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category2));
+        when(categoryRepository.findById(3L)).thenReturn(Optional.of(category3));
+        when(preferredCategoryRepository.save(any(PreferredCategory.class))).thenReturn(PreferredCategory.builder().id(11L).build())
+                .thenReturn(PreferredCategory.builder().id(12L).build())
+                .thenReturn(PreferredCategory.builder().id(13L).build());
+
+        // When
+        List<Long> result = userService.savePreferredCategories(user.getEmail(), categoryIds);
+
+        // Then
+        assertEquals(result, createdPreferredCategories);
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(categoryRepository, times(3)).findById(anyLong());
+        verify(preferredCategoryRepository, times(3)).save(any(PreferredCategory.class));
+    }
+    @Test
+    void findAllPreferredCategories_Success() {
+        // Given
+        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).category(Category.builder().id(1L).name("등산").build()).build();
+        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).category(Category.builder().id(2L).name("식도릭").build()).build();
+        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
+        List<PreferredCategoryResponseDto> expectedDtoList = new ArrayList<>();
+        PreferredCategoryResponseDto dto1 = new PreferredCategoryResponseDto();
+        dto1.setCategoryName("등산");
+        PreferredCategoryResponseDto dto2 = new PreferredCategoryResponseDto();
+        dto2.setCategoryName("식도락");
+        expectedDtoList.add(dto1);
+        expectedDtoList.add(dto2);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
+        when(preferredCategoryResponseDtoMapper.toDtoList(preferredCategories)).thenReturn(expectedDtoList);
+
+        // When
+        List<PreferredCategoryResponseDto> result = userService.findAllPreferredCategories(user.getEmail());
+
+        // Then
+        assertEquals(result, expectedDtoList);
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
+        verify(preferredCategoryResponseDtoMapper, times(1)).toDtoList(preferredCategories);
+    }
 
     @Test
-    void testFindAllUserMountains() {
+    void deleteAllPreferredCategory_Success() {
+        // Given
+        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).build();
+        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).build();
+        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
+
+        // When
+        userService.deleteAllPreferredCategory(user.getEmail());
+
+        // Then
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
+        verify(preferredCategoryRepository, times(1)).deleteAll(preferredCategories);
+    }
+
+    @Test
+    void findAllUserMountains_Success() {
         // Given
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
@@ -608,7 +652,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testFindChallengesByCompletion() {
+    void findChallengesByCompletion_Success() {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
@@ -636,7 +680,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void testGetIndividualRanking() {
+    void getIndividualRanking_Success() {
         // Mock data
 
         rankingUser = new User();
@@ -677,79 +721,6 @@ public class UserServiceImplTest {
         assertEquals(expectedResponseDto.getImage(), actualResponseDto.getImage());
         assertEquals(expectedResponseDto.getScore(), actualResponseDto.getScore());
         verify(rankingRepository, times(1)).findAllByOrderByScoreDesc();
-    }
-
-    @Test
-    void testSavePreferredCategories() {
-        // Given
-        List<Long> categoryIds = Arrays.asList(1L, 2L, 3L);
-        Category category1 = Category.builder().id(1L).build();
-        Category category2 = Category.builder().id(2L).build();
-        Category category3 = Category.builder().id(3L).build();
-        List<Long> createdPreferredCategories = Arrays.asList(11L, 12L, 13L);
-
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category1));
-        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category2));
-        when(categoryRepository.findById(3L)).thenReturn(Optional.of(category3));
-        when(preferredCategoryRepository.save(any(PreferredCategory.class))).thenReturn(PreferredCategory.builder().id(11L).build())
-                .thenReturn(PreferredCategory.builder().id(12L).build())
-                .thenReturn(PreferredCategory.builder().id(13L).build());
-
-        // When
-        List<Long> result = userService.savePreferredCategories(user.getEmail(), categoryIds);
-
-        // Then
-        assertEquals(result, createdPreferredCategories);
-        verify(userRepository, times(1)).findByEmail(user.getEmail());
-        verify(categoryRepository, times(3)).findById(anyLong());
-        verify(preferredCategoryRepository, times(3)).save(any(PreferredCategory.class));
-    }
-    @Test
-    void findAllPreferredCategories() {
-        // Given
-        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).category(Category.builder().id(1L).name("등산").build()).build();
-        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).category(Category.builder().id(2L).name("식도릭").build()).build();
-        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
-        List<PreferredCategoryResponseDto> expectedDtoList = new ArrayList<>();
-        PreferredCategoryResponseDto dto1 = new PreferredCategoryResponseDto();
-        dto1.setCategoryName("등산");
-        PreferredCategoryResponseDto dto2 = new PreferredCategoryResponseDto();
-        dto2.setCategoryName("식도락");
-        expectedDtoList.add(dto1);
-        expectedDtoList.add(dto2);
-
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
-        when(preferredCategoryResponseDtoMapper.toDtoList(preferredCategories)).thenReturn(expectedDtoList);
-
-        // When
-        List<PreferredCategoryResponseDto> result = userService.findAllPreferredCategories(user.getEmail());
-
-        // Then
-        assertEquals(result, expectedDtoList);
-        verify(userRepository, times(1)).findByEmail(user.getEmail());
-        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
-        verify(preferredCategoryResponseDtoMapper, times(1)).toDtoList(preferredCategories);
-    }
-
-    @Test
-    void deleteAllPreferredCategory() {
-        // Given
-        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).build();
-        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).build();
-        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
-
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
-
-        // When
-        userService.deleteAllPreferredCategory(user.getEmail());
-
-        // Then
-        verify(userRepository, times(1)).findByEmail(user.getEmail());
-        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
-        verify(preferredCategoryRepository, times(1)).deleteAll(preferredCategories);
     }
 }
 
