@@ -203,13 +203,49 @@ public class UserServiceImplTest {
         assertEquals(1L, userId);
     }
 
+    @Test
+    public void testSignup_EmailAlreadyExists() {
+        // Given
+        UserSignupRequestDto requestDto = new UserSignupRequestDto();
+        requestDto.setEmail("existinguser@gmail.com"); // 이미 존재하는 이메일을 사용
+        requestDto.setPassword("1q2w3e4r!!");
+        requestDto.setName("엘리스");
+        requestDto.setNickname("귀요미산악꾼");
+        requestDto.setPhoneNumber("01023234545");
+
+        when(userRepository.existsByEmail(anyString())).thenReturn(true); // 이미 존재하는 이메일을 가정
+
+        // When & Then
+        assertThrows(ServiceLogicException.class, () -> {
+            userService.signup(requestDto);}
+        );
+    }
+
+    @Test
+    public void signup_NicknameAlreadyExists() {
+        // Given
+        UserSignupRequestDto requestDto = new UserSignupRequestDto();
+        requestDto.setEmail("newuser@gmail.com");
+        requestDto.setPassword("1q2w3e4r!!");
+        requestDto.setName("엘리스");
+        requestDto.setNickname("existingnickname"); // 이미 존재하는 닉네임을 사용
+        requestDto.setPhoneNumber("01023234545");
+
+        when(userRepository.existsByEmail(anyString())).thenReturn(false); // 이메일 중복 체크는 통과
+        when(userRepository.existsByNickname(anyString())).thenReturn(true); // 이미 존재하는 닉네임을 가정
+
+        // When & Then
+        assertThrows(ServiceLogicException.class, () -> {
+            userService.signup(requestDto);}
+        );
+    }
+
 
     @Test
     void testCheckEmailDuplicate_WhenExists_ReturnsTrue() {
         // Arrange
 //        String email = "user@example.com";
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
-
         // Act
         Boolean result = userService.checkEmailDuplicate(user.getEmail());
 

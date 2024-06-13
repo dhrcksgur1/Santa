@@ -84,6 +84,8 @@ public class ChallengeServiceImpl implements ChallengeService{
 
     @Override
     public ChallengeResponseDto updateChallenge(Long id, ChallengeCreateDto challengeCreateDto) {
+        Challenge challenge = challengeRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CHALLENGE_NOT_FOUND));
         Category category = categoryRepository.findByName(challengeCreateDto.getCategoryName())
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
         MultipartFile imageFile = challengeCreateDto.getImageFile();
@@ -95,18 +97,14 @@ public class ChallengeServiceImpl implements ChallengeService{
             }
             imageUrl = s3ImageService.upload(imageFile);
         }
-        ChallengeResponseDto result = null;
-        if (challengeRepository.existsById(id)) {
-            Challenge challenge = challengeRepository.findById(id).get();
-            challenge.setName(challengeCreateDto.getName());
-            challenge.setDescription(challengeCreateDto.getDescription());
-            challenge.setCategory(category);
-            challenge.setImage(imageUrl);
-            challenge.setClearStandard(challengeCreateDto.getClearStandard());
-            challenge = challengeRepository.save(challenge);
-            result = challengeResponseMapper.toDto(challenge);
-        }
-        return result;
+
+        challenge.setName(challengeCreateDto.getName());
+        challenge.setDescription(challengeCreateDto.getDescription());
+        challenge.setCategory(category);
+        challenge.setImage(imageUrl);
+        challenge.setClearStandard(challengeCreateDto.getClearStandard());
+        Challenge save = challengeRepository.save(challenge);
+        return challengeResponseMapper.toDto(save);
     }
 
     @Override

@@ -33,8 +33,8 @@ public enum ExceptionCode {
     REPORT_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 신고한 사람입니다." ),
     USER_REPORT_EXIST(HttpStatus.CONFLICT, "신고 내역이 있어 탈퇴할 수 없습니다."),
     MEETING_ALREADY_END(HttpStatus.CONFLICT, "모임이 이미 종료 되었습니다." ),
-    USERRANKING_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저 랭킹 정보입니다.");
-
+    USERRANKING_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저 랭킹 정보입니다."),
+    CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 챌랜지입니다.");
 
     private final HttpStatus status;
     private final String message;
