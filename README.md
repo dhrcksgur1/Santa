@@ -5,8 +5,8 @@
 
  - 산림청에서 제공하는 100대 명산 리스트 기준으로 유저간에 점수를 공유할 수 있도록 인증형 챌린지 제공
  - 지속가능한 등산문화를 위한 취향에 맞는 커뮤니티 문화 조성
- - 도메인 : https://d1xcphd0q4kb63.cloudfront.net/
- - 스웨거 : http://ec2-43-200-136-37.ap-northeast-2.compute.amazonaws.com/swagger-ui/index.html#/ <br></br>
+ - [🏔️Santa 도메인](https://d1xcphd0q4kb63.cloudfront.net/)
+ - [🏔️Santa 스웨거](http://ec2-43-200-136-37.ap-northeast-2.compute.amazonaws.com/swagger-ui/index.html)<br></br>
 
 
 ## **서비스 목적**
